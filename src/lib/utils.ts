@@ -95,6 +95,45 @@ export function extract_client_ip(headers: Headers | Record<string, string | str
 }
 
 // ---------------------------------------------------------------------------
+// Origin validation (CSRF protection)
+// ---------------------------------------------------------------------------
+
+/**
+ * Validates the Origin header of an incoming request against an allowlist.
+ *
+ * Permit conditions:
+ *   - No allowlist configured (allowed_origins is undefined) — open/self-hosted mode.
+ *   - Request has no Origin header — direct server-to-server or CLI clients.
+ *   - Origin exactly matches an allowlist entry (case-insensitive).
+ *
+ * Block conditions:
+ *   - Allowlist is configured AND Origin is present AND Origin is not in the list.
+ */
+export function validate_origin(
+  headers: Headers | Record<string, string | string[] | undefined>,
+  allowed_origins: ReadonlyArray<string> | undefined
+): boolean {
+  // No allowlist configured — open mode, permit everything
+  if (allowed_origins === undefined) return true;
+
+  const get = (name: string): string | undefined => {
+    if (headers instanceof Headers) {
+      return headers.get(name) ?? undefined;
+    }
+    const v = headers[name];
+    if (Array.isArray(v)) return v[0];
+    return v;
+  };
+
+  const origin = get('origin');
+  // Non-browser clients (CLI, server-to-server) send no Origin — always permit
+  if (origin === undefined) return true;
+
+  const normalized = origin.toLowerCase().trim();
+  return allowed_origins.some((o) => o.toLowerCase() === normalized);
+}
+
+// ---------------------------------------------------------------------------
 // Schema-based JSON parsing
 // ---------------------------------------------------------------------------
 

@@ -150,20 +150,21 @@ vercel env add FIRECRAWL_API_KEY
 
 ### Environment variables
 
-| Variable                 | Required         | Description                                              |
-| ------------------------ | ---------------- | -------------------------------------------------------- |
-| `FIRECRAWL_API_KEY`      | One of these two | Firecrawl cloud API key                                  |
-| `FIRECRAWL_API_URL`      | One of these two | Self-hosted instance base URL                            |
-| `CLOUD_SERVICE`          | No               | `true` to require per-request API key via header         |
-| `SAFE_MODE`              | No               | `true` to disable browser execute and crawl webhooks     |
-| `MAX_REQUEST_BODY_BYTES` | No               | Max request body size in bytes (default: `1048576`)      |
-| `REQUEST_TIMEOUT_MS`     | No               | Request timeout budget in ms (default: `25000`)          |
-| `RATE_LIMIT_ENABLED`     | No               | Enable in-memory per-IP rate limiting (default: `true`)  |
-| `RATE_LIMIT_REQUESTS`    | No               | Allowed requests per window (default: `120`)             |
-| `RATE_LIMIT_WINDOW_MS`   | No               | Rate-limit window in ms (default: `60000`)               |
-| `PORT`                   | No               | Local server port (default: 3000)                        |
-| `LOG_LEVEL`              | No               | `debug` \| `info` \| `warn` \| `error` (default: `info`) |
-| `MCP_VERSION`            | No               | MCP protocol version (default: `2024-11-05`)             |
+| Variable                 | Required         | Description                                                                                                                   |
+| ------------------------ | ---------------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| `FIRECRAWL_API_KEY`      | One of these two | Firecrawl cloud API key                                                                                                       |
+| `FIRECRAWL_API_URL`      | One of these two | Self-hosted instance base URL                                                                                                 |
+| `CLOUD_SERVICE`          | No               | `true` to require per-request API key via header                                                                              |
+| `SAFE_MODE`              | No               | `true` to disable browser execute and crawl webhooks                                                                          |
+| `MAX_REQUEST_BODY_BYTES` | No               | Max request body size in bytes (default: `1048576`)                                                                           |
+| `REQUEST_TIMEOUT_MS`     | No               | Request timeout budget in ms (default: `25000`)                                                                               |
+| `RATE_LIMIT_ENABLED`     | No               | Enable in-memory per-IP rate limiting (default: `true`)                                                                       |
+| `RATE_LIMIT_REQUESTS`    | No               | Allowed requests per window (default: `120`)                                                                                  |
+| `RATE_LIMIT_WINDOW_MS`   | No               | Rate-limit window in ms (default: `60000`)                                                                                    |
+| `PORT`                   | No               | Local server port (default: 3000)                                                                                             |
+| `LOG_LEVEL`              | No               | `debug` \| `info` \| `warn` \| `error` (default: `info`)                                                                      |
+| `MCP_VERSION`            | No               | MCP protocol version (default: `2024-11-05`)                                                                                  |
+| `ALLOWED_ORIGINS`        | No               | Comma-separated allowlist of permitted `Origin` values for CSRF protection. Omit or set to `*` to disable (default: disabled) |
 
 ---
 

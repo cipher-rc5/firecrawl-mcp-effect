@@ -17,9 +17,17 @@ export const McpErrorCode = {
   // MCP-specific
   unauthorized: -32001,
   configuration_error: -32002,
-  firecrawl_error: -32003,
+  firecrawl_error: -32003, // unclassified upstream error
   tool_not_found: -32004,
-  rate_limited: -32005
+  rate_limited: -32005,
+  // Granular upstream Firecrawl error sub-codes
+  firecrawl_unauthorized: -32010, // 401 from upstream
+  firecrawl_forbidden: -32011, // 403 from upstream
+  firecrawl_rate_limited: -32012, // 429 from upstream
+  firecrawl_not_found: -32013, // 404 from upstream
+  firecrawl_server_error: -32014, // 5xx from upstream
+  firecrawl_timeout: -32015, // network timeout
+  firecrawl_network_error: -32016 // DNS / connection refused
 } as const;
 
 export type McpErrorCode = (typeof McpErrorCode)[keyof typeof McpErrorCode];

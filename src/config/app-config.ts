@@ -24,6 +24,8 @@ export interface AppConfigShape {
   readonly port: number;
   readonly log_level: 'debug' | 'info' | 'warn' | 'error';
   readonly mcp_version: string;
+  /** Comma-separated allowlist of permitted Origin header values. undefined = disabled (open). */
+  readonly allowed_origins: ReadonlyArray<string> | undefined;
 }
 
 // ---------------------------------------------------------------------------
@@ -103,6 +105,18 @@ export const AppConfigLive: Layer.Layer<AppConfig, ConfigError.ConfigError> = La
     const log_level = yield* log_level_config;
     const mcp_version = yield* Config.string('MCP_VERSION').pipe(Config.withDefault('2024-11-05'));
 
+    // ALLOWED_ORIGINS: comma-separated list of exact Origin header values to permit.
+    // Omit or set to '*' to disable validation entirely (default: disabled).
+    const allowed_origins = yield* Config.string('ALLOWED_ORIGINS').pipe(
+      Config.option,
+      Effect.map((opt): ReadonlyArray<string> | undefined => {
+        if (opt._tag === 'None') return undefined;
+        const raw = opt.value.trim();
+        if (raw === '' || raw === '*') return undefined; // explicit wildcard = disabled
+        return raw.split(',').map((s) => s.trim()).filter((s) => s.length > 0);
+      })
+    );
+
     return {
       firecrawl_api_key,
       firecrawl_api_url,
@@ -115,7 +129,8 @@ export const AppConfigLive: Layer.Layer<AppConfig, ConfigError.ConfigError> = La
       rate_limit_window_ms,
       port,
       log_level,
-      mcp_version
+      mcp_version,
+      allowed_origins
     } satisfies AppConfigShape;
   })
 );

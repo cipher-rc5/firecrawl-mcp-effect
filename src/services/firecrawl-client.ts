@@ -3,9 +3,11 @@
 // reference: https://effect.website/docs/guides/context-management/layers
 
 import FirecrawlApp from '@mendable/firecrawl-js';
+import type { AgentResponse, AgentStatusResponse } from '@mendable/firecrawl-js';
 import { Context, Effect, Layer, Redacted } from 'effect';
 import { AppConfig } from '../config/app-config.ts';
-import { configuration_error, type ConfigurationError, firecrawl_error, type FirecrawlClientError, unauthorized, type UnauthorizedError } from '../errors/mcp-errors.ts';
+import { configuration_error, type ConfigurationError, type FirecrawlClientError, unauthorized, type UnauthorizedError } from '../errors/mcp-errors.ts';
+import { classified_firecrawl_error } from '../lib/upstream-classifier.ts';
 
 // ---------------------------------------------------------------------------
 // Constants
@@ -34,9 +36,9 @@ export interface FirecrawlClientOps {
 
   readonly extract: (body: Record<string, unknown>) => Effect.Effect<unknown, FirecrawlClientError>;
 
-  readonly start_agent: (body: Record<string, unknown>) => Effect.Effect<unknown, FirecrawlClientError>;
+  readonly start_agent: (body: Record<string, unknown>) => Effect.Effect<AgentResponse, FirecrawlClientError>;
 
-  readonly get_agent_status: (id: string) => Effect.Effect<unknown, FirecrawlClientError>;
+  readonly get_agent_status: (id: string) => Effect.Effect<AgentStatusResponse, FirecrawlClientError>;
 
   readonly browser_create: (options: Record<string, unknown>) => Effect.Effect<unknown, FirecrawlClientError>;
 
@@ -68,7 +70,7 @@ function build_app(api_key: string | undefined, api_url: string | undefined): Fi
 }
 
 function wrap<T>(label: string, fn: () => Promise<T>): Effect.Effect<T, FirecrawlClientError> {
-  return Effect.tryPromise({ try: fn, catch: (cause) => firecrawl_error(`Firecrawl ${label} failed`, cause) });
+  return Effect.tryPromise({ try: fn, catch: (cause) => classified_firecrawl_error(label, cause) });
 }
 
 function build_ops(app: FirecrawlApp): FirecrawlClientOps {
@@ -86,11 +88,11 @@ function build_ops(app: FirecrawlApp): FirecrawlClientOps {
     extract: (body) => wrap('extract', () => app.extract({ ...body, origin: ORIGIN } as never)),
 
     start_agent: (body) => wrap('startAgent', () =>
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      (app as any).startAgent({ ...body, origin: ORIGIN })),
+      // Body is pre-validated by the tool schema layer; cast through unknown to satisfy
+      // the typed SDK signature without the blanket `any` that was here before.
+      app.startAgent({ ...body, origin: ORIGIN } as unknown as Parameters<typeof app.startAgent>[0])),
 
-    get_agent_status: (id) => // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    wrap('getAgentStatus', () => (app as any).getAgentStatus(id)),
+    get_agent_status: (id) => wrap('getAgentStatus', () => app.getAgentStatus(id)),
 
     browser_create: (options) => wrap('browser', () => app.browser(options as never)),
 

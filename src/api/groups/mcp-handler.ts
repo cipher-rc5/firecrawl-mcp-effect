@@ -6,7 +6,7 @@ import { Effect } from 'effect';
 import { Schema } from 'effect';
 import { AppConfig } from '../../config/app-config.ts';
 import { FirecrawlClientError, type McpDomainError, McpErrorCode } from '../../errors/mcp-errors.ts';
-import { extract_api_key, extract_client_ip } from '../../lib/utils.ts';
+import { extract_api_key, extract_client_ip, validate_origin } from '../../lib/utils.ts';
 import { get_client } from '../../services/firecrawl-client.ts';
 import { FirecrawlClient } from '../../services/firecrawl-client.ts';
 import { AppLogger } from '../../services/logger.ts';
@@ -252,6 +252,31 @@ export function handle_web_request(
         }
       }
 
+      // Origin validation — only enforced when ALLOWED_ORIGINS is configured.
+      // Requests without an Origin header (CLI, server-to-server) are always permitted.
+      if (!validate_origin(request.headers, config.allowed_origins)) {
+        logger.warn('request:origin_rejected', { origin: request.headers.get('origin'), client_ip });
+        const err_resp: McpResponse = {
+          jsonrpc: '2.0',
+          id: null,
+          error: { code: McpErrorCode.unauthorized, message: 'Origin not allowed' }
+        };
+        return finalize(
+          new Response(JSON.stringify(err_resp), {
+            status: 403,
+            headers: {
+              'Content-Type': 'application/json',
+              'Access-Control-Allow-Origin': 'null' // explicitly deny CORS
+            }
+          })
+        );
+      }
+
+      // EARLY REJECTION (latency optimization only — NOT a security boundary):
+      // If Content-Length is present and unambiguously exceeds the limit, reject
+      // immediately to avoid buffering an obviously oversized body. A client can
+      // omit or falsify this header; the authoritative check below operates on the
+      // actual buffered byte count and cannot be bypassed.
       const content_length = request.headers.get('content-length');
       if (content_length !== null) {
         const parsed = Number(content_length);
@@ -282,6 +307,8 @@ export function handle_web_request(
       }
       const raw_body = raw_body_result.right;
 
+      // AUTHORITATIVE size enforcement — operates on the actual buffered byte count.
+      // This check cannot be bypassed regardless of what the client sent in Content-Length.
       const body_bytes = new TextEncoder().encode(raw_body).byteLength;
       if (body_bytes > config.max_request_body_bytes) {
         const err_resp: McpResponse = {

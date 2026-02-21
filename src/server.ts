@@ -1,5 +1,6 @@
 // file: src/server.ts
-// description: Local Bun HTTP server for development — mirrors Vercel handler behaviour
+// description: Local Bun HTTP server for development — mirrors Vercel handler behaviour.
+//   Registers SIGTERM/SIGINT handlers for graceful shutdown in containerized environments.
 // reference: https://bun.sh/docs/api/http
 
 import { Effect, ManagedRuntime } from 'effect';
@@ -58,3 +59,28 @@ const server = Bun.serve({
 });
 
 console.log(`[firecrawl-mcp] listening on http://${server.hostname}:${server.port}`);
+
+// ---------------------------------------------------------------------------
+// Graceful shutdown
+// ---------------------------------------------------------------------------
+//
+// Container orchestrators (Docker, Kubernetes) send SIGTERM before SIGKILL.
+// Without a handler, in-flight requests are dropped immediately.
+// server.stop() drains in-flight requests before closing the socket.
+// runtime.dispose() releases all Effect finalizers (fibers, open connections).
+
+async function shutdown(signal: string): Promise<void> {
+  console.log(`[firecrawl-mcp] received ${signal}, shutting down`);
+
+  // Stop accepting new connections and wait for in-flight requests to drain.
+  await server.stop();
+
+  // Release all Effect ManagedRuntime finalizers.
+  await runtime.dispose();
+
+  console.log('[firecrawl-mcp] shutdown complete');
+  process.exit(0);
+}
+
+process.on('SIGTERM', () => void shutdown('SIGTERM'));
+process.on('SIGINT', () => void shutdown('SIGINT'));

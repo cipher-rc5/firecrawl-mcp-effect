@@ -112,13 +112,18 @@ export const FirecrawlClientLive: Layer.Layer<FirecrawlClient, ConfigurationErro
     Effect.gen(function*() {
       const config = yield* AppConfig;
 
-      if (!config.cloud_service) {
-        // Self-hosted path: validate that at least one credential is present
-        if (config.firecrawl_api_key === undefined && config.firecrawl_api_url === undefined) {
-          return yield* Effect.fail(
-            configuration_error('Either FIRECRAWL_API_KEY or FIRECRAWL_API_URL must be provided')
-          );
-        }
+      if (config.cloud_service) {
+        // In cloud mode the API key comes from the request header; each request
+        // builds its own client via make_request_client. Install a stub so the
+        // layer graph builds cleanly without requiring credentials at startup.
+        return cloud_stub_ops();
+      }
+
+      // Self-hosted path: validate that at least one credential is present
+      if (config.firecrawl_api_key === undefined && config.firecrawl_api_url === undefined) {
+        return yield* Effect.fail(
+          configuration_error('Either FIRECRAWL_API_KEY or FIRECRAWL_API_URL must be provided')
+        );
       }
 
       const api_key = config.firecrawl_api_key !== undefined ? Redacted.value(config.firecrawl_api_key) : undefined;
@@ -127,6 +132,34 @@ export const FirecrawlClientLive: Layer.Layer<FirecrawlClient, ConfigurationErro
       return build_ops(app);
     })
   );
+
+// ---------------------------------------------------------------------------
+// Cloud-mode stub — satisfies the layer graph without constructing a real app
+// ---------------------------------------------------------------------------
+
+/**
+ * Returns a FirecrawlClientOps whose methods all die with a bug marker.
+ * In cloud mode the service-layer slot is never accessed at runtime — each
+ * request resolves its own client via make_request_client — so this stub only
+ * exists to keep the Effect layer graph well-typed.
+ */
+function cloud_stub_ops(): FirecrawlClientOps {
+  const unreachable = Effect.die(new Error('BUG: FirecrawlClient stub called in cloud mode'));
+  return {
+    scrape: () => unreachable,
+    map: () => unreachable,
+    search: () => unreachable,
+    crawl: () => unreachable,
+    get_crawl_status: () => unreachable,
+    extract: () => unreachable,
+    start_agent: () => unreachable,
+    get_agent_status: () => unreachable,
+    browser_create: () => unreachable,
+    browser_execute: () => unreachable,
+    browser_delete: () => unreachable,
+    browser_list: () => unreachable
+  };
+}
 
 // ---------------------------------------------------------------------------
 // Per-request factory — used in cloud mode where the key comes from a header

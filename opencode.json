@@ -1,0 +1,14 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "instructions": [
+    ".opencode/rules/00-core.md",
+    ".opencode/rules/10-typescript-safety.md",
+    ".opencode/rules/20-architecture-solid.md",
+    ".opencode/rules/30-workflow-docs.md",
+    "docs/quickstart.md",
+    "docs/mcp-usage.md",
+    "docs/troubleshooting.md",
+    "docs/architecture.md",
+    "docs/dev/README.md"
+  ]
+}

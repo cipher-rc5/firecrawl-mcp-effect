@@ -1,0 +1,30 @@
+# Dependencies
+node_modules/
+
+# Build artifacts
+dist/
+coverage/
+*.tsbuildinfo
+
+# Environment and secrets
+.env
+.env.local
+.env.*.local
+
+# Local/developer-only directories
+_dev/
+.vercel/
+
+# Logs and temp files
+*.log
+tmp/
+.tmp/
+
+# OS/editor files
+.DS_Store
+.idea/
+.vscode/
+
+# Lockfiles (intentionally excluded by repo policy)
+bun.lock
+bun.lockb

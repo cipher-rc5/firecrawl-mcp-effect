@@ -1,0 +1,55 @@
+name: Dependency Policy
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  pinned-dependencies:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: '1.3.9'
+
+      - name: Enforce exact dependency versions
+        run: |
+          bun -e '
+          const pkg = JSON.parse(await Bun.file("package.json").text());
+          const sections = ["dependencies", "devDependencies", "peerDependencies", "optionalDependencies"];
+          const offenders = [];
+          const exact = /^\d+\.\d+\.\d+(?:[-+].+)?$/;
+          for (const section of sections) {
+            const deps = pkg[section] ?? {};
+            for (const [name, version] of Object.entries(deps)) {
+              if (typeof version !== "string" || !exact.test(version)) {
+                offenders.push(`${section}:${name}@${version}`);
+              }
+            }
+          }
+          if (typeof pkg.packageManager !== "string" || !/^bun@\d+\.\d+\.\d+$/.test(pkg.packageManager)) {
+            offenders.push(`packageManager:${pkg.packageManager ?? "missing"}`);
+          }
+          if (offenders.length > 0) {
+            console.error("Non-pinned dependency entries found:\n" + offenders.join("\n"));
+            process.exit(1);
+          }
+          '
+
+      - name: Ensure bun.lock is not committed
+        run: |
+          if [ -f bun.lock ]; then
+            echo "bun.lock must not be committed by repo policy"
+            exit 1
+          fi

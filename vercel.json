@@ -1,0 +1,23 @@
+{
+  "version": 2,
+  "buildCommand": "bun run vercel-build",
+  "installCommand": "bun install",
+  "outputDirectory": "dist",
+  "framework": null,
+  "rewrites": [
+    { "source": "/health", "destination": "/api/health" },
+    { "source": "/metrics", "destination": "/api/metrics" },
+    { "source": "/mcp/(.*)", "destination": "/api/mcp" },
+    { "source": "/(.*)", "destination": "/api/mcp" }
+  ],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        { "key": "X-Content-Type-Options", "value": "nosniff" },
+        { "key": "X-Frame-Options", "value": "DENY" },
+        { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" }
+      ]
+    }
+  ]
+}

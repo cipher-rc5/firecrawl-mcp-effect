@@ -1,0 +1,5 @@
+_dev/
+.github/
+tests/
+docs/
+*.log

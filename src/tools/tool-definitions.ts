@@ -1,12 +1,13 @@
 // file: src/tools/tool-definitions.ts
 // description: Static tool metadata returned by tools/list — decoupled from handler logic
-// reference: https://spec.modelcontextprotocol.io/specification/server/tools/
+// reference: https://modelcontextprotocol.io/specification/2025-11-25/server/tools
 
 /**
  * MCP tool metadata shape returned by `tools/list`.
  */
 export interface ToolDefinition {
   readonly name: string;
+  readonly title?: string;
   readonly description: string;
   readonly inputSchema: {
     readonly type: 'object',
@@ -20,6 +21,7 @@ export interface ToolDefinition {
  */
 export const TOOL_DEFINITIONS: ReadonlyArray<ToolDefinition> = [{
   name: 'firecrawl_scrape',
+  title: 'Web Page Scraper',
   description:
     'Scrape content from a single URL. Supports markdown, html, rawHtml, screenshot, links, summary, branding, and JSON extraction formats. Use JSON format with a schema for specific structured data extraction. Use markdown only when you need the entire page content.',
   inputSchema: {
@@ -48,6 +50,7 @@ export const TOOL_DEFINITIONS: ReadonlyArray<ToolDefinition> = [{
   }
 }, {
   name: 'firecrawl_map',
+  title: 'Site URL Mapper',
   description:
     'Discover all indexed URLs on a site. Use the search parameter to filter results by keyword. Prefer this over firecrawl_agent when scrape returns empty results.',
   inputSchema: {
@@ -64,6 +67,7 @@ export const TOOL_DEFINITIONS: ReadonlyArray<ToolDefinition> = [{
   }
 }, {
   name: 'firecrawl_search',
+  title: 'Web Search',
   description:
     'Search the web and optionally scrape result pages. Supports web, images, and news sources. Best for finding information across multiple sites.',
   inputSchema: {
@@ -85,6 +89,7 @@ export const TOOL_DEFINITIONS: ReadonlyArray<ToolDefinition> = [{
   }
 }, {
   name: 'firecrawl_crawl',
+  title: 'Site Crawler',
   description:
     'Start an async crawl job across multiple pages of a site. Returns a job ID. Poll firecrawl_check_crawl_status for results. Limit depth and page count to avoid token overflow.',
   inputSchema: {
@@ -107,10 +112,12 @@ export const TOOL_DEFINITIONS: ReadonlyArray<ToolDefinition> = [{
   }
 }, {
   name: 'firecrawl_check_crawl_status',
+  title: 'Check Crawl Status',
   description: 'Check the status and retrieve results of a crawl job by ID.',
   inputSchema: { type: 'object', properties: { id: { type: 'string' } }, required: ['id'] }
 }, {
   name: 'firecrawl_extract',
+  title: 'Data Extractor',
   description:
     'Extract structured data from one or more URLs using LLM capabilities. Provide a prompt and optional JSON schema for typed output.',
   inputSchema: {
@@ -127,6 +134,7 @@ export const TOOL_DEFINITIONS: ReadonlyArray<ToolDefinition> = [{
   }
 }, {
   name: 'firecrawl_agent',
+  title: 'Research Agent',
   description:
     'Async autonomous web research agent. Describe what you need in natural language. Returns a job ID immediately — poll firecrawl_agent_status every 15-30s for up to 5 minutes.',
   inputSchema: {
@@ -140,10 +148,12 @@ export const TOOL_DEFINITIONS: ReadonlyArray<ToolDefinition> = [{
   }
 }, {
   name: 'firecrawl_agent_status',
+  title: 'Check Agent Status',
   description: 'Check the status of an agent job. Keep polling every 15-30s until status is completed or failed.',
   inputSchema: { type: 'object', properties: { id: { type: 'string' } }, required: ['id'] }
 }, {
   name: 'firecrawl_browser_create',
+  title: 'Create Browser Session',
   description: 'Create a persistent browser session for CDP-based automation. Returns a session ID and live view URL.',
   inputSchema: {
     type: 'object',
@@ -155,6 +165,7 @@ export const TOOL_DEFINITIONS: ReadonlyArray<ToolDefinition> = [{
   }
 }, {
   name: 'firecrawl_browser_execute',
+  title: 'Execute Browser Code',
   description:
     'Execute bash (agent-browser commands), Python, or Node.js code in an active browser session. Requires a session ID from firecrawl_browser_create. Disabled in safe mode.',
   inputSchema: {
@@ -168,10 +179,12 @@ export const TOOL_DEFINITIONS: ReadonlyArray<ToolDefinition> = [{
   }
 }, {
   name: 'firecrawl_browser_delete',
+  title: 'Delete Browser Session',
   description: 'Destroy a browser session and release its resources.',
   inputSchema: { type: 'object', properties: { sessionId: { type: 'string' } }, required: ['sessionId'] }
 }, {
   name: 'firecrawl_browser_list',
+  title: 'List Browser Sessions',
   description: 'List browser sessions, optionally filtered by status.',
   inputSchema: { type: 'object', properties: { status: { type: 'string', enum: ['active', 'destroyed'] } } }
 }];

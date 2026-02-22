@@ -103,7 +103,7 @@ export const AppConfigLive: Layer.Layer<AppConfig, ConfigError.ConfigError> = La
 
     const port = yield* Config.integer('PORT').pipe(Config.withDefault(3000));
     const log_level = yield* log_level_config;
-    const mcp_version = yield* Config.string('MCP_VERSION').pipe(Config.withDefault('2024-11-05'));
+    const mcp_version = yield* Config.string('MCP_VERSION').pipe(Config.withDefault('2025-11-25'));
 
     // ALLOWED_ORIGINS: comma-separated list of exact Origin header values to permit.
     // Omit or set to '*' to disable validation entirely (default: disabled).

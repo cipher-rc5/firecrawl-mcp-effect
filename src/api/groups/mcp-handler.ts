@@ -1,6 +1,6 @@
 // file: src/api/groups/mcp-handler.ts
 // description: Core MCP JSON-RPC 2.0 protocol handler — routes methods to tools, formats responses
-// reference: https://spec.modelcontextprotocol.io/specification/
+// reference: https://modelcontextprotocol.io/specification/2025-11-25
 
 import { Effect } from 'effect';
 import { Schema } from 'effect';
@@ -154,6 +154,16 @@ function handle_tools_call(
     const result = yield* handler(tool_args, client, config.safe_mode).pipe(Effect.catchAll((err) => {
       metrics.record_tool_call(tool_name, 'failure', Date.now() - started_at);
       log_domain_error(logger, err, { phase: 'tool_execute', tool: tool_name });
+      
+      // Execution errors: return as tool result with isError: true (allows LLM self-correction)
+      if (err instanceof FirecrawlClientError) {
+        return Effect.succeed(ok_response(req.id, {
+          content: [{ type: 'text', text: err.message }],
+          isError: true
+        }));
+      }
+      
+      // Protocol errors: return as JSON-RPC error (malformed request, invalid params structure)
       return Effect.fail(domain_error_to_wire(req.id, err));
     }));
 
@@ -161,7 +171,7 @@ function handle_tools_call(
 
     logger.debug('tool:call:success', { tool: tool_name });
 
-    return ok_response(req.id, { content: [{ type: 'text', text: result }] });
+    return ok_response(req.id, { content: [{ type: 'text', text: result }], isError: false });
   }).pipe(Effect.catchAll((wire) => Effect.succeed(wire as McpResponse)));
 }
 

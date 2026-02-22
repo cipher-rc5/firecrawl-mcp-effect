@@ -4,7 +4,10 @@ A self-hostable, Vercel-compatible MCP (Model Context Protocol) server for
 [Firecrawl](https://firecrawl.dev), built with strict TypeScript ES2024,
 [Effect-TS](https://effect.website), and the Bun runtime.
 
-Documentation index: [`docs/README.md`](docs/README.md) (including developer docs in `docs/dev/`)
+**Quick Start:**
+-  [**Add to Claude Desktop**](CLAUDE-DESKTOP-QUICKSTART.md) (or run `./scripts/setup-claude.sh`)
+-  [**Add to LM Studio**](LMSTUDIO-QUICKSTART.md)
+-  [Full Documentation](docs/README.md) (including developer docs in `docs/dev/`)
 
 ---
 
@@ -163,7 +166,7 @@ vercel env add FIRECRAWL_API_KEY
 | `RATE_LIMIT_WINDOW_MS`   | No               | Rate-limit window in ms (default: `60000`)                                                                                    |
 | `PORT`                   | No               | Local server port (default: 3000)                                                                                             |
 | `LOG_LEVEL`              | No               | `debug` \| `info` \| `warn` \| `error` (default: `info`)                                                                      |
-| `MCP_VERSION`            | No               | MCP protocol version (default: `2024-11-05`)                                                                                  |
+| `MCP_VERSION`            | No               | MCP protocol version (default: `2025-11-25`)                                                                                  |
 | `ALLOWED_ORIGINS`        | No               | Comma-separated allowlist of permitted `Origin` values for CSRF protection. Omit or set to `*` to disable (default: disabled) |
 
 ---

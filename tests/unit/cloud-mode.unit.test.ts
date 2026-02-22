@@ -1,6 +1,6 @@
 // file: tests/unit/cloud-mode.unit.test.ts
 // description: Verifies cloud service mode API key injection and rejection behavior.
-//   Uses mock client — no live credentials required.
+// Uses mock client — no live credentials required.
 
 import { describe, expect, test } from 'bun:test';
 import { Effect } from 'effect';

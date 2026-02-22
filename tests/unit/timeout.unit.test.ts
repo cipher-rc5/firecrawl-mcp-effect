@@ -1,6 +1,6 @@
 // file: tests/unit/timeout.unit.test.ts
 // description: Verifies that long-running tool calls are aborted at REQUEST_TIMEOUT_MS
-//   and the handler returns HTTP 504 with the correct error code.
+// and the handler returns HTTP 504 with the correct error code.
 
 import { describe, expect, test } from 'bun:test';
 import { Effect } from 'effect';

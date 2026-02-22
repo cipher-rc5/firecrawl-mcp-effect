@@ -60,12 +60,12 @@ describe('mcp handler integration', () => {
       CLOUD_SERVICE: 'false',
       FIRECRAWL_API_KEY: 'fc-env-key',
       RATE_LIMIT_ENABLED: 'false',
-      MCP_VERSION: '2024-11-05'
+      MCP_VERSION: '2025-11-25'
     }, async () => {
       const { status, json } = await request_json({ jsonrpc: '2.0', id: 1, method: 'initialize', params: {} });
       expect(status).toBe(200);
       const result = json['result'] as Record<string, unknown>;
-      expect(result['protocolVersion']).toBe('2024-11-05');
+      expect(result['protocolVersion']).toBe('2025-11-25');
       expect((result['capabilities'] as Record<string, unknown>)['tools']).toBeDefined();
     });
   });

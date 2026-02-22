@@ -1,7 +1,7 @@
 // file: tests/unit/rate-limit-http.unit.test.ts
 // description: Verifies that the HTTP handler returns 429 when the in-memory rate limiter
-//   blocks a client IP. Uses a shared ManagedRuntime per test so state accumulates
-//   across requests (as it would in the real server process).
+// blocks a client IP. Uses a shared ManagedRuntime per test so state accumulates
+// across requests (as it would in the real server process).
 
 import { describe, expect, test } from 'bun:test';
 import { ManagedRuntime } from 'effect';

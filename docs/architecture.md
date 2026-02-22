@@ -2,6 +2,8 @@
 
 This document maps request flow, service composition, and key dependencies.
 
+**Protocol Compliance:** This implementation conforms to [Model Context Protocol 2025-11-25](https://modelcontextprotocol.io/specification/2025-11-25).
+
 ## Request lifecycle
 
 ```mermaid

@@ -1,6 +1,6 @@
 // file: tests/unit/safe-mode.unit.test.ts
 // description: Verifies that safe mode strips disallowed parameters before forwarding
-//   requests to the Firecrawl client. Uses mock client — no live credentials required.
+// requests to the Firecrawl client. Uses mock client — no live credentials required.
 
 import { describe, expect, test } from 'bun:test';
 import { Effect } from 'effect';

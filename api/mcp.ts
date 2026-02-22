@@ -4,6 +4,7 @@
 
 import { Effect, ManagedRuntime } from 'effect';
 import { handle_web_request } from '../src/api/groups/mcp-handler.ts';
+import { handle_sse_request } from '../src/api/groups/sse-handler.ts';
 import { AppLive } from '../src/lib/app-layer.ts';
 
 // ---------------------------------------------------------------------------
@@ -34,5 +35,15 @@ export default async function handler(request: Request): Promise<Response> {
     });
   }
 
+  // Check if client expects SSE (e.g., LM Studio)
+  const accept_header = request.headers.get('Accept') || '';
+  const wants_sse = accept_header.includes('text/event-stream');
+
+  if (wants_sse) {
+    // Use SSE transport for clients like LM Studio
+    return runtime.runPromise(handle_sse_request(request));
+  }
+
+  // Use standard JSON-RPC transport for other clients
   return runtime.runPromise(handle_web_request(request));
 }

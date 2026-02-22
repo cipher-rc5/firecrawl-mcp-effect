@@ -7,16 +7,19 @@
 Claude Desktop config location varies by OS:
 
 **macOS:**
+
 ```bash
 ~/Library/Application Support/Claude/claude_desktop_config.json
 ```
 
 **Windows:**
+
 ```bash
 %APPDATA%\Claude\claude_desktop_config.json
 ```
 
 **Linux:**
+
 ```bash
 ~/.config/Claude/claude_desktop_config.json
 ```
@@ -39,13 +42,8 @@ Open (or create) `claude_desktop_config.json` and add:
   "mcpServers": {
     "firecrawl": {
       "command": "bun",
-      "args": [
-        "run",
-        "/Users/excalibur/Desktop/dev/firecrawl-mcp-effect/src/stdio-server.ts"
-      ],
-      "env": {
-        "FIRECRAWL_API_KEY": "fc-bdadbb11005d41898abfc7fdf1d11522"
-      }
+      "args": ["run", "/Users/excalibur/Desktop/dev/firecrawl-mcp-effect/src/stdio-server.ts"],
+      "env": { "FIRECRAWL_API_KEY": "fc-bdadbb11005d41898abfc7fdf1d11522" }
     }
   }
 }
@@ -63,7 +61,7 @@ In Claude Desktop, ask:
 
 > "Can you scrape https://example.com?"
 
-You should see Claude using the MCP tools (look for a  icon or "Used firecrawl_scrape" message).
+You should see Claude using the MCP tools (look for a icon or "Used firecrawl_scrape" message).
 
 ---
 
@@ -72,6 +70,7 @@ You should see Claude using the MCP tools (look for a  icon or "Used firecrawl_s
 ### Option 1: Environment Variable (Shown Above)
 
 Pass API key via config:
+
 ```json
 "env": {
   "FIRECRAWL_API_KEY": "your-key-here",
@@ -84,6 +83,7 @@ Pass API key via config:
 If you prefer to keep your API key in `.env`:
 
 **`.env` file:**
+
 ```env
 FIRECRAWL_API_KEY=your-key-here
 CLOUD_SERVICE=false
@@ -91,15 +91,13 @@ SAFE_MODE=false
 ```
 
 **`claude_desktop_config.json`:**
+
 ```json
 {
   "mcpServers": {
     "firecrawl": {
       "command": "bun",
-      "args": [
-        "run",
-        "/Users/excalibur/Desktop/dev/firecrawl-mcp-effect/src/stdio-server.ts"
-      ]
+      "args": ["run", "/Users/excalibur/Desktop/dev/firecrawl-mcp-effect/src/stdio-server.ts"]
     }
   }
 }
@@ -116,6 +114,7 @@ Claude Desktop supports **MCP 2024-11-05** (the same as LM Studio).
 Your server defaults to 2024-11-05, so no special configuration needed!
 
 If you want to force a specific version:
+
 ```json
 "env": {
   "FIRECRAWL_API_KEY": "your-key",
@@ -157,6 +156,7 @@ If you're still seeing this error, make sure you have the latest version and res
 ### "command not found: bun"
 
 Install Bun:
+
 ```bash
 curl -fsSL https://bun.sh/install | bash
 ```
@@ -166,16 +166,19 @@ Then restart Claude Desktop.
 ### Check Claude Logs
 
 **macOS:**
+
 ```bash
 tail -f ~/Library/Logs/Claude/mcp*.log
 ```
 
 **Windows:**
+
 ```bash
 type %APPDATA%\Claude\logs\mcp*.log
 ```
 
 **Linux:**
+
 ```bash
 tail -f ~/.config/Claude/logs/mcp*.log
 ```
@@ -201,18 +204,18 @@ tail -f ~/.config/Claude/logs/mcp*.log
 
 Once connected, Claude can use all 12 Firecrawl tools:
 
--  **firecrawl_scrape** - Scrape web pages
--  **firecrawl_search** - Search the web  
--  **firecrawl_map** - Discover site URLs
--  **firecrawl_crawl** - Crawl entire sites
--  **firecrawl_extract** - Extract structured data
--  **firecrawl_agent** - Autonomous research
--  **firecrawl_browser_create** - Create browser sessions
--  **firecrawl_browser_execute** - Execute browser code
--  **firecrawl_browser_delete** - Delete browser sessions
--  **firecrawl_browser_list** - List browser sessions
--  **firecrawl_check_crawl_status** - Check crawl status
--  **firecrawl_agent_status** - Check agent status
+- **firecrawl_scrape** - Scrape web pages
+- **firecrawl_search** - Search the web
+- **firecrawl_map** - Discover site URLs
+- **firecrawl_crawl** - Crawl entire sites
+- **firecrawl_extract** - Extract structured data
+- **firecrawl_agent** - Autonomous research
+- **firecrawl_browser_create** - Create browser sessions
+- **firecrawl_browser_execute** - Execute browser code
+- **firecrawl_browser_delete** - Delete browser sessions
+- **firecrawl_browser_list** - List browser sessions
+- **firecrawl_check_crawl_status** - Check crawl status
+- **firecrawl_agent_status** - Check agent status
 
 ---
 
@@ -251,9 +254,7 @@ You can add multiple MCP servers to Claude. Example config with Firecrawl + othe
     "firecrawl": {
       "command": "bun",
       "args": ["run", "/path/to/firecrawl-mcp-effect/src/stdio-server.ts"],
-      "env": {
-        "FIRECRAWL_API_KEY": "your-key"
-      }
+      "env": { "FIRECRAWL_API_KEY": "your-key" }
     },
     "filesystem": {
       "command": "npx",

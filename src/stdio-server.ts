@@ -4,12 +4,12 @@
 // reference: https://modelcontextprotocol.io/specification/2025-11-25/basic/transports#stdio
 
 import { Effect, ManagedRuntime } from 'effect';
-import { handle_mcp_request } from './api/groups/mcp-handler.ts';
-import { AppLive } from './lib/app-layer.ts';
-import { AppConfig } from './config/app-config.ts';
-import type { McpRequest, McpResponse } from './api/schemas/firecrawl-schemas.ts';
 import { Schema } from 'effect';
+import { handle_mcp_request } from './api/groups/mcp-handler.ts';
+import type { McpRequest, McpResponse } from './api/schemas/firecrawl-schemas.ts';
 import { McpRequest as McpRequestSchema } from './api/schemas/firecrawl-schemas.ts';
+import { AppConfig } from './config/app-config.ts';
+import { AppLive } from './lib/app-layer.ts';
 
 // ---------------------------------------------------------------------------
 // Runtime setup
@@ -59,9 +59,7 @@ async function process_line(line: string): Promise<void> {
   }
 
   // Validate MCP request schema
-  const decode_result = await runtime.runPromise(
-    Schema.decodeUnknown(McpRequestSchema)(parsed).pipe(Effect.either)
-  );
+  const decode_result = await runtime.runPromise(Schema.decodeUnknown(McpRequestSchema)(parsed).pipe(Effect.either));
 
   if (decode_result._tag === 'Left') {
     // Try to extract ID from parsed object, use 0 if not found
@@ -115,13 +113,9 @@ async function main(): Promise<void> {
     } catch (error) {
       // Log errors to stderr
       console.error('[firecrawl-mcp-stdio] Error processing line:', error);
-      
+
       // Send internal error to stdout (use id: 0 for compatibility)
-      const error_response: McpResponse = {
-        jsonrpc: '2.0',
-        id: 0,
-        error: { code: -32603, message: 'Internal error' }
-      };
+      const error_response: McpResponse = { jsonrpc: '2.0', id: 0, error: { code: -32603, message: 'Internal error' } };
       console.log(JSON.stringify(error_response));
     }
   }

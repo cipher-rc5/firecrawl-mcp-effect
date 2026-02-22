@@ -5,9 +5,10 @@ A self-hostable, Vercel-compatible MCP (Model Context Protocol) server for
 [Effect-TS](https://effect.website), and the Bun runtime.
 
 **Quick Start:**
--  [**Add to Claude Desktop**](CLAUDE-DESKTOP-QUICKSTART.md) (or run `./scripts/setup-claude.sh`)
--  [**Add to LM Studio**](LMSTUDIO-QUICKSTART.md)
--  [Full Documentation](docs/README.md) (including developer docs in `docs/dev/`)
+
+- [**Add to Claude Desktop**](CLAUDE-DESKTOP-QUICKSTART.md) (or run `./scripts/setup-claude.sh`)
+- [**Add to LM Studio**](LMSTUDIO-QUICKSTART.md)
+- [Full Documentation](docs/README.md) (including developer docs in `docs/dev/`)
 
 ---
 

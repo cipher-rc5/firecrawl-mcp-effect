@@ -1,6 +1,6 @@
 # Quickstart
 
-This guide gets a local MCP server running and validates a full request flow.
+This guide gets a local MCP server running and validates a full request flow
 
 ## 1) Install dependencies
 

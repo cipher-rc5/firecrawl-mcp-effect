@@ -21,6 +21,7 @@ cp .env.example .env
 ```
 
 Edit `.env` and configure:
+
 ```env
 FIRECRAWL_API_KEY=your-actual-key-here
 CLOUD_SERVICE=false
@@ -41,25 +42,20 @@ LOG_LEVEL=info
   "mcpServers": {
     "firecrawl": {
       "command": "bun",
-      "args": [
-        "run",
-        "/FULL/PATH/TO/firecrawl-mcp-effect/src/stdio-server.ts"
-      ],
-      "env": {
-        "FIRECRAWL_API_KEY": "your-firecrawl-api-key-here",
-        "SAFE_MODE": "true",
-        "MCP_VERSION": "2024-11-05"
-      }
+      "args": ["run", "/FULL/PATH/TO/firecrawl-mcp-effect/src/stdio-server.ts"],
+      "env": { "FIRECRAWL_API_KEY": "your-firecrawl-api-key-here", "SAFE_MODE": "true", "MCP_VERSION": "2024-11-05" }
     }
   }
 }
 ```
 
 **Important Notes:**
+
 - Replace `/FULL/PATH/TO/firecrawl-mcp-effect` with the absolute path to your project directory
 - **Must include `MCP_VERSION: "2024-11-05"`** — LM Studio doesn't support 2025-11-25 yet
 
 To find the full path, run this in your project directory:
+
 ```bash
 pwd
 ```
@@ -71,6 +67,7 @@ Example result: `/Users/yourname/projects/firecrawl-mcp-effect`
 ### Step 3: Verify Connection
 
 In LM Studio's chat interface:
+
 - The Firecrawl tools should now appear in the available tools list (you may need to restart LM Studio)
 - Try asking: **"Can you scrape the content from https://example.com?"**
 - The AI should automatically use the `firecrawl_scrape` tool
@@ -83,20 +80,20 @@ In LM Studio's chat interface:
 
 Your Firecrawl MCP server provides 12 tools to LM Studio:
 
-| Tool | Description |
-|------|-------------|
-| `firecrawl_scrape` | Scrape content from a single URL |
-| `firecrawl_map` | Discover all URLs on a site |
-| `firecrawl_search` | Search the web and scrape results |
-| `firecrawl_crawl` | Start async crawl job across multiple pages |
-| `firecrawl_check_crawl_status` | Check crawl job status |
-| `firecrawl_extract` | Extract structured data from URLs |
-| `firecrawl_agent` | Autonomous web research agent |
-| `firecrawl_agent_status` | Check agent job status |
-| `firecrawl_browser_create` | Create browser automation session |
-| `firecrawl_browser_execute` | Execute code in browser (disabled in safe mode) |
-| `firecrawl_browser_delete` | Delete browser session |
-| `firecrawl_browser_list` | List active browser sessions |
+| Tool                           | Description                                     |
+| ------------------------------ | ----------------------------------------------- |
+| `firecrawl_scrape`             | Scrape content from a single URL                |
+| `firecrawl_map`                | Discover all URLs on a site                     |
+| `firecrawl_search`             | Search the web and scrape results               |
+| `firecrawl_crawl`              | Start async crawl job across multiple pages     |
+| `firecrawl_check_crawl_status` | Check crawl job status                          |
+| `firecrawl_extract`            | Extract structured data from URLs               |
+| `firecrawl_agent`              | Autonomous web research agent                   |
+| `firecrawl_agent_status`       | Check agent job status                          |
+| `firecrawl_browser_create`     | Create browser automation session               |
+| `firecrawl_browser_execute`    | Execute code in browser (disabled in safe mode) |
+| `firecrawl_browser_delete`     | Delete browser session                          |
+| `firecrawl_browser_list`       | List active browser sessions                    |
 
 ---
 
@@ -107,16 +104,14 @@ Your Firecrawl MCP server provides 12 tools to LM Studio:
 Pass the API key via `mcp.json` env field:
 
 **LM Studio `mcp.json`:**
+
 ```json
 {
   "mcpServers": {
     "firecrawl": {
       "command": "bun",
       "args": ["run", "/path/to/firecrawl-mcp-effect/src/stdio-server.ts"],
-      "env": {
-        "FIRECRAWL_API_KEY": "your-key-here",
-        "SAFE_MODE": "true"
-      }
+      "env": { "FIRECRAWL_API_KEY": "your-key-here", "SAFE_MODE": "true" }
     }
   }
 }
@@ -127,6 +122,7 @@ Pass the API key via `mcp.json` env field:
 Store the API key in `.env` (more secure, not in config file):
 
 **`.env`:**
+
 ```env
 FIRECRAWL_API_KEY=your-key-here
 CLOUD_SERVICE=false
@@ -134,13 +130,11 @@ SAFE_MODE=true
 ```
 
 **LM Studio `mcp.json`:**
+
 ```json
 {
   "mcpServers": {
-    "firecrawl": {
-      "command": "bun",
-      "args": ["run", "/path/to/firecrawl-mcp-effect/src/stdio-server.ts"]
-    }
+    "firecrawl": { "command": "bun", "args": ["run", "/path/to/firecrawl-mcp-effect/src/stdio-server.ts"] }
   }
 }
 ```
@@ -154,14 +148,16 @@ The server will read from `.env` automatically.
 ### stdio Transport
 
 LM Studio uses **stdio (standard input/output)** for MCP communication. It spawns the MCP server as a subprocess and communicates via:
+
 - **stdin**: LM Studio sends newline-delimited JSON-RPC requests
 - **stdout**: Server sends newline-delimited JSON-RPC responses
 - **stderr**: Server logs (captured by LM Studio for debugging)
 
 The server supports multiple transports:
--  **stdio transport** (for LM Studio, Claude Desktop)
--  **HTTP with SSE** (for remote clients)
--  **Standard HTTP JSON-RPC** (for Claude MCP Inspector)
+
+- **stdio transport** (for LM Studio, Claude Desktop)
+- **HTTP with SSE** (for remote clients)
+- **Standard HTTP JSON-RPC** (for Claude MCP Inspector)
 
 ### Protocol Version
 
@@ -170,6 +166,7 @@ This server supports **both MCP 2024-11-05 and MCP 2025-11-25**.
 **For LM Studio:** Use `2024-11-05` (LM Studio doesn't support 2025-11-25 yet)
 
 Set in your `mcp.json`:
+
 ```json
 "env": {
   "MCP_VERSION": "2024-11-05"
@@ -177,6 +174,7 @@ Set in your `mcp.json`:
 ```
 
 **For newer clients:** The server defaults to `2025-11-25` and includes latest features like:
+
 - `isError` field in tool results
 - `title` field in tool definitions
 - Better error handling semantics
@@ -184,6 +182,7 @@ Set in your `mcp.json`:
 ### Response Format
 
 All tool results include:
+
 - `content`: Array of result items
 - `isError`: Boolean indicating success/failure
 
@@ -198,6 +197,7 @@ This allows LLMs to self-correct on execution errors.
 **Problem:** Bun not installed or not in PATH
 
 **Solution:**
+
 ```bash
 # Install Bun
 curl -fsSL https://bun.sh/install | bash
@@ -207,11 +207,9 @@ bun --version
 ```
 
 Alternatively, use `bunx` instead of `bun run` in your `mcp.json`:
+
 ```json
-{
-  "command": "bunx",
-  "args": ["--bun", "/path/to/src/stdio-server.ts"]
-}
+{ "command": "bunx", "args": ["--bun", "/path/to/src/stdio-server.ts"] }
 ```
 
 ---
@@ -221,6 +219,7 @@ Alternatively, use `bunx` instead of `bun run` in your `mcp.json`:
 **Problem:** Dependencies not installed
 
 **Solution:**
+
 ```bash
 cd /path/to/firecrawl-mcp-effect
 bun install
@@ -233,16 +232,14 @@ bun install
 **Problem:** LM Studio doesn't support MCP 2025-11-25 yet
 
 **Solution:** Add `MCP_VERSION` to your env in `mcp.json`:
+
 ```json
 {
   "mcpServers": {
     "firecrawl": {
       "command": "bun",
       "args": ["run", "/path/to/src/stdio-server.ts"],
-      "env": {
-        "FIRECRAWL_API_KEY": "your-key",
-        "MCP_VERSION": "2024-11-05"
-      }
+      "env": { "FIRECRAWL_API_KEY": "your-key", "MCP_VERSION": "2024-11-05" }
     }
   }
 }
@@ -257,7 +254,9 @@ Restart LM Studio after saving.
 **Problem:** Check LM Studio logs for the actual error
 
 **Solution:**
+
 1. Test the stdio server manually:
+
 ```bash
 cd /path/to/firecrawl-mcp-effect
 echo '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{}}' | bun run stdio
@@ -275,6 +274,7 @@ echo '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{}}' | bun run stdi
 **Problem:** API key not configured
 
 **Solution:**
+
 - If `CLOUD_SERVICE=false`: Add `FIRECRAWL_API_KEY` to `.env`
 - If `CLOUD_SERVICE=true`: Add header to LM Studio `mcp.json`
 
@@ -285,6 +285,7 @@ echo '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{}}' | bun run stdi
 **Problem:** LM Studio not recognizing the MCP server
 
 **Solution:**
+
 1. Verify `mcp.json` syntax is correct (no trailing commas)
 2. Restart LM Studio completely
 3. Check LM Studio logs for connection errors
@@ -297,12 +298,14 @@ echo '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{}}' | bun run stdi
 **Problem:** Tools execute but return errors
 
 **Solution:**
+
 1. Check server logs: `bun run dev` shows detailed logging
 2. Verify Firecrawl API key is valid
 3. Check API quota/limits on your Firecrawl account
 4. Look for `X-Request-Id` in responses for correlation
 
 Example log:
+
 ```json
 {
   "ts": "2026-02-22T04:30:00.000Z",
@@ -331,11 +334,21 @@ echo '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{}}' | bun run stdi
 ```
 
 Expected output (on stdout):
+
 ```json
-{"jsonrpc":"2.0","id":1,"result":{"protocolVersion":"2025-11-25","capabilities":{"tools":{"listChanged":false}},"serverInfo":{"name":"firecrawl-mcp","version":"1.0.0"}}}
+{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "result": {
+    "protocolVersion": "2025-11-25",
+    "capabilities": { "tools": { "listChanged": false } },
+    "serverInfo": { "name": "firecrawl-mcp", "version": "1.0.0" }
+  }
+}
 ```
 
 You'll also see debug logs on stderr like:
+
 ```
 [firecrawl-mcp-stdio] Starting stdio transport server
 [firecrawl-mcp-stdio] Protocol: MCP 2025-11-25
@@ -353,3 +366,4 @@ You should see a JSON response with all 12 Firecrawl tools.
 
 ```
 User: Can you scrape https://example.com and tell me what you find?
+```

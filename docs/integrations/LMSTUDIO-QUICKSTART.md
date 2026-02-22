@@ -22,20 +22,14 @@ Add this (replace `/FULL/PATH/TO/...` with your path from step 1):
   "mcpServers": {
     "firecrawl": {
       "command": "bun",
-      "args": [
-        "run",
-        "/FULL/PATH/TO/firecrawl-mcp-effect/src/stdio-server.ts"
-      ],
-      "env": {
-        "FIRECRAWL_API_KEY": "your-firecrawl-api-key-here",
-        "MCP_VERSION": "2024-11-05"
-      }
+      "args": ["run", "/FULL/PATH/TO/firecrawl-mcp-effect/src/stdio-server.ts"],
+      "env": { "FIRECRAWL_API_KEY": "your-firecrawl-api-key-here", "MCP_VERSION": "2024-11-05" }
     }
   }
 }
 ```
 
- **Important:** Must include `"MCP_VERSION": "2024-11-05"` — LM Studio doesn't support 2025-11-25 yet!
+**Important:** Must include `"MCP_VERSION": "2024-11-05"` — LM Studio doesn't support 2025-11-25 yet!
 
 ### 3. Test It
 
@@ -50,10 +44,12 @@ The AI should use the `firecrawl_scrape` tool automatically!
 ## Troubleshooting
 
 **Error: "Server's protocol version is not supported: 2025-11-25"**
+
 - Make sure you added `"MCP_VERSION": "2024-11-05"` to the env in your mcp.json
 - Restart LM Studio after saving
 
 **Tools don't appear?**
+
 1. Restart LM Studio completely
 2. Check LM Studio logs (Debug panel) for errors
 3. Test manually:
@@ -65,6 +61,7 @@ The AI should use the `firecrawl_scrape` tool automatically!
 
 **"command not found: bun"?**
 Install Bun:
+
 ```bash
 curl -fsSL https://bun.sh/install | bash
 ```

@@ -22,6 +22,21 @@ const runtime = ManagedRuntime.make(AppLive);
 // ---------------------------------------------------------------------------
 
 /**
+ * Extract ID from parsed JSON if possible, otherwise use 0
+ */
+function extract_id(parsed: unknown): string | number {
+  if (typeof parsed === 'object' && parsed !== null) {
+    const obj = parsed as Record<string, unknown>;
+    const id = obj['id'];
+    if (typeof id === 'string' || typeof id === 'number') {
+      return id;
+    }
+  }
+  // Use 0 instead of null for compatibility with Claude Desktop
+  return 0;
+}
+
+/**
  * Process a single line of JSON-RPC input from stdin.
  */
 async function process_line(line: string): Promise<void> {
@@ -33,9 +48,10 @@ async function process_line(line: string): Promise<void> {
     parsed = JSON.parse(line);
   } catch (error) {
     // Invalid JSON — send parse error to stdout
+    // Use id: 0 instead of null for Claude Desktop compatibility
     const error_response: McpResponse = {
       jsonrpc: '2.0',
-      id: null,
+      id: 0,
       error: { code: -32700, message: 'Parse error: Invalid JSON' }
     };
     console.log(JSON.stringify(error_response));
@@ -48,9 +64,11 @@ async function process_line(line: string): Promise<void> {
   );
 
   if (decode_result._tag === 'Left') {
+    // Try to extract ID from parsed object, use 0 if not found
+    const id = extract_id(parsed);
     const error_response: McpResponse = {
       jsonrpc: '2.0',
-      id: null,
+      id,
       error: { code: -32600, message: 'Invalid Request: Malformed MCP request' }
     };
     console.log(JSON.stringify(error_response));
@@ -79,9 +97,15 @@ async function process_line(line: string): Promise<void> {
  * Main stdio loop — read lines from stdin, process each as JSON-RPC message.
  */
 async function main(): Promise<void> {
+  // Get protocol version from config
+  const protocol_version = await runtime.runPromise(Effect.gen(function*() {
+    const config = yield* AppConfig;
+    return config.mcp_version;
+  }));
+
   // Log to stderr (not stdout, which is reserved for MCP messages)
   console.error('[firecrawl-mcp-stdio] Starting stdio transport server');
-  console.error('[firecrawl-mcp-stdio] Protocol: MCP 2025-11-25');
+  console.error(`[firecrawl-mcp-stdio] Protocol: MCP ${protocol_version}`);
   console.error('[firecrawl-mcp-stdio] Reading JSON-RPC messages from stdin...');
 
   // Use Bun's stdin stream
@@ -92,10 +116,10 @@ async function main(): Promise<void> {
       // Log errors to stderr
       console.error('[firecrawl-mcp-stdio] Error processing line:', error);
       
-      // Send internal error to stdout
+      // Send internal error to stdout (use id: 0 for compatibility)
       const error_response: McpResponse = {
         jsonrpc: '2.0',
-        id: null,
+        id: 0,
         error: { code: -32603, message: 'Internal error' }
       };
       console.log(JSON.stringify(error_response));

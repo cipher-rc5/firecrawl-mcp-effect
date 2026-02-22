@@ -127,21 +127,32 @@ If you want to force a specific version:
 
 ## Troubleshooting
 
+### Zod validation errors ("invalid_union", "Expected string, received null")
+
+✅ **Fixed!** This was caused by error responses using `id: null`. The server now uses `id: 0` for compatibility.
+
+If you're still seeing this error, make sure you have the latest version and restart Claude Desktop.
+
 ### Tools don't appear in Claude?
 
-1. **Check config file location** - Make sure you're editing the right file
-2. **Verify JSON syntax** - No trailing commas, valid JSON
-3. **Check Bun installation:**
+1. **Run compatibility test:**
+   ```bash
+   cd /Users/excalibur/Desktop/dev/firecrawl-mcp-effect
+   ./scripts/test-claude-compat.sh
+   ```
+2. **Check config file location** - Make sure you're editing the right file
+3. **Verify JSON syntax** - No trailing commas, valid JSON
+4. **Check Bun installation:**
    ```bash
    which bun
    bun --version
    ```
-4. **Test stdio server manually:**
+5. **Test stdio server manually:**
    ```bash
    cd /Users/excalibur/Desktop/dev/firecrawl-mcp-effect
    echo '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{}}' | bun run stdio
    ```
-5. **Restart Claude completely** - Quit (Cmd+Q on Mac), then reopen
+6. **Restart Claude completely** - Quit (Cmd+Q on Mac), then reopen
 
 ### "command not found: bun"
 

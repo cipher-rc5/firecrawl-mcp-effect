@@ -22,3 +22,22 @@ curl -s -X POST http://localhost:3000/mcp -H "Content-Type: application/json" -d
 Single Comprehensive Check
 curl -s http://localhost:3000/health | jq -e '.status == "ok"' > /dev/null && curl -s -X POST http://localhost:3000/mcp -H "Content-Type: application/json" -d '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{}}' | jq -e '.result.capabilities' > /dev/null && curl -s -X POST http://localhost:3000/mcp -H "Content-Type: application/json" -d '{"jsonrpc":"2.0","id":2,"method":"tools/list","params":{}}' | jq -e '.result.tools | length > 0' > /dev/null && echo "[SUCCESS] All MCP endpoints operational" || echo "[ERROR] Some checks failed"
 The original command was actually working - your MCP server is functioning correctly! The confusing output was just a shell character encoding issue with the checkmark symbols.
+
+
+```bash
+curl -X POST http://localhost:3005 \
+  -H "Content-Type: application/json" \
+  -d '{
+    "jsonrpc": "2.0",
+    "id": 2,
+    "method": "tools/call",
+    "params": {
+      "name": "firecrawl_scrape",
+      "arguments": {
+        "url": "https://quotes.toscrape.com/",
+        "formats": ["markdown"],
+        "onlyMainContent": true
+      }
+    }
+  }'
+```

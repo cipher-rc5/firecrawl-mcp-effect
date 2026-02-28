@@ -26,7 +26,7 @@
   },
   "devDependencies": {
     "@types/bun": "1.3.9",
-    "dprint": "0.51.1",
+    "dprint": "0.52.0",
     "typescript": "5.9.3"
   },
   "engines": {

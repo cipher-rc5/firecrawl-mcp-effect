@@ -17,7 +17,7 @@
     "test:coverage": "bun test --coverage",
     "vercel-build": "bun run typecheck && bun run build"
   },
-  "dependencies": { "@effect/platform": "0.94.5", "@mendable/firecrawl-js": "4.16.0", "effect": "3.19.19" },
+  "dependencies": { "@effect/platform": "0.94.5", "@mendable/firecrawl-js": "4.16.0", "effect": "3.21.0" },
   "devDependencies": { "@types/bun": "1.3.10", "dprint": "0.52.0", "typescript": "5.9.3" },
   "engines": { "bun": "1.3.10" }
 }

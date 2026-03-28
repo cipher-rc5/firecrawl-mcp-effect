@@ -4,7 +4,9 @@
   "description": "Firecrawl MCP server — self-hostable, Vercel-compatible, Effect-TS",
   "type": "module",
   "packageManager": "bun@1.3.10",
-  "bin": { "firecrawl-mcp": "./src/stdio-server.ts" },
+  "bin": {
+    "firecrawl-mcp": "./src/stdio-server.ts"
+  },
   "scripts": {
     "dev": "bun run --hot src/server.ts",
     "stdio": "bun run src/stdio-server.ts",
@@ -17,7 +19,17 @@
     "test:coverage": "bun test --coverage",
     "vercel-build": "bun run typecheck && bun run build"
   },
-  "dependencies": { "@effect/platform": "0.94.5", "@mendable/firecrawl-js": "4.15.4", "effect": "3.19.19" },
-  "devDependencies": { "@types/bun": "1.3.10", "dprint": "0.52.0", "typescript": "5.9.3" },
-  "engines": { "bun": "1.3.10" }
+  "dependencies": {
+    "@effect/platform": "0.96.0",
+    "@mendable/firecrawl-js": "4.18.0",
+    "effect": "3.21.0"
+  },
+  "devDependencies": {
+    "@types/bun": "1.3.11",
+    "dprint": "0.53.1",
+    "typescript": "6.0.2"
+  },
+  "engines": {
+    "bun": "1.3.10"
+  }
 }

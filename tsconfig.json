@@ -12,11 +12,11 @@
     "allowImportingTsExtensions": true,
     "verbatimModuleSyntax": true,
     "isolatedModules": true,
+    "types": ["bun"],
     "skipLibCheck": true,
     "noEmit": true,
     "outDir": "dist",
-    "baseUrl": ".",
-    "paths": { "@/*": ["src/*"] }
+    "paths": { "@/*": ["./src/*"] }
   },
   "include": ["src/**/*", "api/**/*", "scripts/**/*", "tests/**/*"],
   "exclude": ["node_modules", "dist", "_dev"]

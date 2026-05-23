@@ -21,7 +21,7 @@
   },
   "dependencies": {
     "@effect/platform": "0.96.1",
-    "@mendable/firecrawl-js": "4.22.2",
+    "@mendable/firecrawl-js": "4.24.2",
     "effect": "3.21.2"
   },
   "devDependencies": {

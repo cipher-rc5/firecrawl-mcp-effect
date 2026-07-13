@@ -20,7 +20,7 @@
     "vercel-build": "bun run typecheck && bun run build"
   },
   "dependencies": {
-    "@effect/platform": "0.96.1",
+    "@effect/platform": "0.96.2",
     "@mendable/firecrawl-js": "4.22.2",
     "effect": "3.21.4"
   },

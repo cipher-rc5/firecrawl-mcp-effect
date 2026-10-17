@@ -2,6 +2,8 @@
 
 This guide shows you how to connect your Firecrawl MCP server to LM Studio.
 
+For an optional search companion, see [Parallel Search with Firecrawl in LM Studio](./integrations/PARALLEL-SEARCH-LMSTUDIO.md).
+
 ## Prerequisites
 
 - **LM Studio** version 0.3.17 or later
@@ -147,7 +149,7 @@ The server will read from `.env` automatically.
 
 ### stdio Transport
 
-LM Studio uses **stdio (standard input/output)** for MCP communication. It spawns the MCP server as a subprocess and communicates via:
+This Firecrawl setup uses **stdio (standard input/output)** for MCP communication. LM Studio spawns the server as a subprocess and communicates via:
 
 - **stdin**: LM Studio sends newline-delimited JSON-RPC requests
 - **stdout**: Server sends newline-delimited JSON-RPC responses

@@ -6,6 +6,7 @@ This directory contains operational and developer documentation for `firecrawl-m
 
 - [Quickstart](./quickstart.md)
 - [MCP Usage Guide](./mcp-usage.md)
+- [Optional Parallel Search in LM Studio](./integrations/PARALLEL-SEARCH-LMSTUDIO.md)
 - [Troubleshooting](./troubleshooting.md)
 - [Architecture and Dependencies](./architecture.md)
 - [Developer Docs](./dev/README.md)
